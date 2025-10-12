@@ -1,0 +1,40 @@
+@import "reset.css";
+@import "common.css";
+
+/* App layout */
+.app-root {
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+}
+
+.app-header {
+	background: #0b5cff;
+	color: #fff;
+	padding: 12px 16px;
+}
+.app-header__title {
+	font-size: 20px;
+	margin: 0;
+}
+
+.app-nav {
+	padding: 8px 16px;
+	background: #f5f7fb;
+	display: flex;
+	gap: 12px;
+}
+
+.app-main {
+	flex: 1 0 auto;
+	padding: 20px;
+	background: #fff;
+}
+
+.app-footer {
+	background: #f1f3f5;
+	padding: 12px 16px;
+	text-align: center;
+	font-size: 14px;
+	color: #666;
+}
