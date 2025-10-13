@@ -1,14 +1,122 @@
-import React, { FC } from "react";
-
-interface PropsInterface {
-  name: string;
-  age: number;
-}
+import React, { FC, useState, useCallback, useMemo } from "react";
+import {
+  Table,
+  Paper,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow
+} from "@mui/material";
+import { User, Column } from "../../types";
+import userList from "../../assets/data/usersMockData";
 
 export default function Users() {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const [rows, setRows] = useState<User[]>(userList);
+
+  const handleEdit = useCallback((row: User) => {
+    console.log("edit", row);
+  }, []);
+
+  const handleDelete = useCallback((id: number) => {
+    setRows((prev) => prev.filter((r) => r.id !== id));
+  }, []);
+
+  const columns = useMemo(
+    () =>
+      [
+        { id: "id", label: "ID" },
+        { id: "name", label: "Name" },
+        { id: "email", label: "Email" },
+        {
+          id: "action",
+          label: "Action",
+          render: (row: User) => (
+            <>
+              <button onClick={() => handleEdit(row)}>Edit</button>
+              <button onClick={() => handleDelete(row.id)}>Delete</button>
+            </>
+          )
+        }
+      ] as Column<User>[],
+    [handleEdit, handleDelete]
+  );
+
   return (
-    <div>
-      <h2>users</h2>
-    </div>
+    <Paper sx={{ width: "100%", overflow: "hidden" }}>
+      <TableContainer sx={{ maxHeight: 440 }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                    {columns.map((column) => {
+                      if (column.render) {
+                        return (
+                          <TableCell
+                            key={String(column.id)}
+                            align={column.align}
+                          >
+                            {column.render(row as User)}
+                          </TableCell>
+                        );
+                      }
+
+                      const colId = column.id as keyof User;
+                      const value = (row as any)[colId];
+                      return (
+                        <TableCell key={String(column.id)} align={column.align}>
+                          {column.format && typeof value === "number"
+                            ? column.format(value)
+                            : value}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </Paper>
   );
 }
