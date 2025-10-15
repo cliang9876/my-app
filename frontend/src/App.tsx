@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { useRoutes, NavLink } from "react-router-dom";
 import routes from "./router";
 import Header from "./components/Header";
@@ -13,7 +13,9 @@ function App() {
         <NavLink to="/users">Users</NavLink>
       </nav>
 
-      <main className="app-main">{useRoutes(routes)}</main>
+      <Suspense fallback="">
+        <main className="app-main">{useRoutes(routes)}</main>
+      </Suspense>
 
       <Footer />
     </div>
