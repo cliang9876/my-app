@@ -8,6 +8,7 @@
   ],
   "main": "index.js",
   "scripts": {
+    "dev": "concurrently -k \"npm run dev -w backend\" \"npm run start -w frontend\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier --write ."
   },
@@ -26,6 +27,7 @@
     "typescript-eslint": "^8.45.0"
   },
   "dependencies": {
+    "concurrently": "^9.2.1",
     "react-router-dom": "^7.9.3"
   }
 }

@@ -10,11 +10,25 @@ import {
   TableRow
 } from "@mui/material";
 import { User, Column } from "../../types";
-import userList from "../../assets/data/usersMockData";
+// import userList from "../../assets/data/usersMockData";
+import { fetchUsers } from "../../service/userApi";
 
 export default function Users() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [userList, setUsers] = React.useState<User[]>([]);
+
+  React.useEffect(() => {
+    async function loadUsers() {
+      try {
+        const data = await fetchUsers();
+        setUsers(data);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    }
+    loadUsers();
+  }, []);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -27,14 +41,15 @@ export default function Users() {
     setPage(0);
   };
 
-  const [rows, setRows] = useState<User[]>(userList);
+  // use the fetched userList directly as the source of truth
+  // avoid keeping a stale duplicate state
 
   const handleEdit = useCallback((row: User) => {
     console.log("edit", row);
   }, []);
 
   const handleDelete = useCallback((id: number) => {
-    setRows((prev) => prev.filter((r) => r.id !== id));
+    setUsers((prev) => prev.filter((r) => r.id !== id));
   }, []);
 
   const columns = useMemo(
@@ -43,6 +58,7 @@ export default function Users() {
         { id: "id", label: "ID" },
         { id: "name", label: "Name" },
         { id: "email", label: "Email" },
+        { id: "role", label: "Role" },
         {
           id: "action",
           label: "Action",
@@ -75,7 +91,7 @@ export default function Users() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {userList
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
@@ -111,7 +127,7 @@ export default function Users() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={userList.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

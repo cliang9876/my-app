@@ -1,5 +1,6 @@
 import prisma from "../db/prisma";
 import { Role } from "@prisma/client";
+import type { CreateRoleDto, UpdateRoleDto } from "../schemas/role";
 
 const role = prisma.role;
 
@@ -11,12 +12,13 @@ export async function getRoleById(id: number): Promise<Role | null> {
   return role.findUnique({ where: { id } });
 }
 
-export async function createRole(data: Role): Promise<Role> {
+export async function createRole(data: CreateRoleDto): Promise<Role> {
   return role.create({ data });
 }
 
-export async function updateRole(data: Role): Promise<Role> {
-  return role.update({ where: { id: data.id }, data });
+export async function updateRole(data: UpdateRoleDto): Promise<Role> {
+  const { id, ...rest } = data;
+  return role.update({ where: { id }, data: rest as any });
 }
 
 export async function deleteRole(id: number): Promise<void> {

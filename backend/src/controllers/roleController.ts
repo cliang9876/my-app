@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as roleService from "../services/roleService";
-import { Role } from "@prisma/client";
+import { createRoleSchema, updateRoleSchema } from "../schemas/role";
 
 export async function listRoles(
   req: Request,
@@ -36,9 +36,9 @@ export async function createRole(
   next: NextFunction
 ) {
   try {
-    const { name } = req.body;
-    const roleObj = { name };
-    const role = await roleService.createRole(roleObj as Role);
+  const parsed = createRoleSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.issues });
+  const role = await roleService.createRole(parsed.data);
     res.status(201).json(role);
   } catch (err) {
     next(err);
@@ -52,9 +52,9 @@ export async function updateRole(
 ) {
   try {
     const id = Number(req.params.id);
-    const { name } = req.body;
-    const roleObj = { id, name };
-    const role = await roleService.updateRole(roleObj as Role);
+  const parsed = updateRoleSchema.safeParse({ id, ...req.body });
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.issues });
+  const role = await roleService.updateRole(parsed.data);
     res.json(role);
   } catch (err) {
     next(err);
