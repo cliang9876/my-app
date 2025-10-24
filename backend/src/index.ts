@@ -1,8 +1,11 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import dotenv from "dotenv";
 import routes from "./routes";
 import errorHandler from "./middleware/errorHandler";
+
+dotenv.config(); //load .env variables
 
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
