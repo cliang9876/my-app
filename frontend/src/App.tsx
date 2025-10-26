@@ -9,6 +9,7 @@ function App() {
     <div className="App app-root">
       <Header />
       <nav className="app-nav">
+        <NavLink to="/login">Login</NavLink>
         <NavLink to="/home">Home</NavLink>
         <NavLink to="/users">Users</NavLink>
       </nav>
