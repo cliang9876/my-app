@@ -17,8 +17,26 @@ export default function Login() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
+  const [msg, setMsg] = React.useState("");
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleLogin = async () => {
+    try {
+      setMsg("");
+      const res = await login(email, password);
+      if (res && res.status === 200) {
+        localStorage.setItem("authToken", res.token);
+        navigate("/users");
+      }
+    } catch (e: any) {
+      if (e.response.status === 401) {
+        setMsg("* Incorrect email or password");
+      } else {
+        navigate("/errorPage");
+      }
+    }
+  };
 
   return (
     <Box
@@ -32,6 +50,7 @@ export default function Login() {
       }}
     >
       <h2 style={{ margin: 0, textAlign: "left" }}>Login</h2>
+      <p style={{ color: "red" }}>{msg}</p>
       <FormControl sx={{ width: "100%" }} variant="outlined">
         <InputLabel htmlFor="outlined-adornment-email">Email</InputLabel>
         <OutlinedInput
@@ -66,15 +85,7 @@ export default function Login() {
         />
       </FormControl>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          onClick={async () => {
-            const res = await login(email, password);
-            localStorage.setItem("authToken", res.token);
-            navigate("/users");
-          }}
-        >
-          Login
-        </button>
+        <button onClick={handleLogin}>Login</button>
       </Box>
     </Box>
   );

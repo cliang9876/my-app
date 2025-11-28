@@ -1,3 +1,4 @@
+import { Response } from "express";
 import axios from "axios";
 
 const httpClient = axios.create({
@@ -23,7 +24,7 @@ httpClient.interceptors.response.use(
     ) {
       // Handle unauthorized access, e.g., redirect to login
       localStorage.removeItem("authToken");
-      window.location.href = "/login";
+      // window.location.href = "/login";
     }
     return Promise.reject(error);
   }

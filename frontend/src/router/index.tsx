@@ -1,11 +1,11 @@
 import React, { lazy } from "react";
 import { RouteObject, Navigate } from "react-router-dom";
-// import Users from "../views/Users";
-// import Home from "../views/Home";
+import ProtectedRoute from "./ProtectedRoute";
 
 const Home = lazy(() => import("../views/Home"));
 const Users = lazy(() => import("../views/Users"));
 const Login = lazy(() => import("../views/Login"));
+const ErrorPage = lazy(() => import("../views/ErrorPage"));
 
 const routes: RouteObject[] = [
   {
@@ -14,15 +14,27 @@ const routes: RouteObject[] = [
   },
   {
     path: "/home",
-    element: <Home />
+    element: (
+      <ProtectedRoute>
+        <Home />
+      </ProtectedRoute>
+    )
   },
   {
     path: "/users",
-    element: <Users />
+    element: (
+      <ProtectedRoute>
+        <Users />
+      </ProtectedRoute>
+    )
   },
   {
     path: "/login",
     element: <Login />
+  },
+  {
+    path: "/errorPage",
+    element: <ErrorPage />
   }
 ];
 

@@ -11,7 +11,6 @@ export const login = async (
 ) => {
   try {
     const { email, password } = req.body;
-    console.log("login payload:", { email, password });
     const user: User | null = await getUserByEmail(email);
     //bcrypt 支持安全地对比明文输入和数据库里的哈希值，数据库里存的是哈希值
     const isMatch = user
@@ -19,7 +18,9 @@ export const login = async (
       : false;
 
     if (!user || !isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res
+        .status(401)
+        .json({ status: 401, message: "Invalid email or password" });
     }
 
     // Generate JWT token
@@ -36,8 +37,8 @@ export const login = async (
       }
     );
 
-    res.json({ message: "Login successful", token });
-  } catch (err) {
+    res.status(200).json({ status: 200, message: "Login successful", token });
+  } catch (err: any) {
     next(err);
   }
 };
