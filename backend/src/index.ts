@@ -1,17 +1,23 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import routes from "./routes";
 import errorHandler from "./middleware/errorHandler";
 
+const corsOption = {
+  origin: "http://localhost:3000",
+  credentials: true
+};
 dotenv.config(); //load .env variables
 
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
 
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOption));
+app.use(cookieParser() as unknown as express.RequestHandler);
 app.use(express.json());
 
 app.get("/", (req, res) => {

@@ -1,12 +1,14 @@
-import { Response } from "express";
 import axios from "axios";
+import { getAccessToken, setAccessToken } from "./tokenStore";
 
 const httpClient = axios.create({
-  baseURL: "http://localhost:4000"
+  baseURL: "http://localhost:4000",
+  withCredentials: true
 });
 
 httpClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("authToken");
+  // if localstorage => const token = localStorage.getItem("authToken");
+  const token = getAccessToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -17,14 +19,22 @@ httpClient.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
-    if (
-      error.response &&
-      (error.response.status === 401 || error.response.status === 403)
-    ) {
+  async (error) => {
+    const status = error.response?.status;
+    const original = error.config;
+    if ((status === 401 || status === 403) && !original._retry) {
       // Handle unauthorized access, e.g., redirect to login
-      localStorage.removeItem("authToken");
-      // window.location.href = "/login";
+      //if localstorage => localStorage.removeItem("authToken");
+      original._retry = true;
+      try {
+        const { data } = await httpClient.post("/auth/refresh");
+        setAccessToken(data.accessToken);
+        original.headers.Authorization = `Bearer ${data.accessToken}`;
+        return httpClient(original);
+      } catch (e) {
+        setAccessToken(null);
+        // window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }

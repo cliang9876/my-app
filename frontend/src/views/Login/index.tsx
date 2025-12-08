@@ -10,6 +10,10 @@ import {
 } from "@mui/material";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "../../store/auth";
+import httpClient from "../../service/httpClients";
+
+const { setAccessToken } = useAuth();
 
 export default function Login() {
   const navigate = useNavigate();
@@ -26,14 +30,16 @@ export default function Login() {
       setMsg("");
       const res = await login(email, password);
       if (res && res.status === 200) {
-        localStorage.setItem("authToken", res.token);
+        setAccessToken(res.accessToken);
         navigate("/users");
       }
     } catch (e: any) {
-      if (e.response.status === 401) {
+      const status = e.response?.status;
+      if (status === 401) {
         setMsg("* Incorrect email or password");
       } else {
-        navigate("/errorPage");
+        setMsg("* Login failed, please try again");
+        navigate("/login");
       }
     }
   };

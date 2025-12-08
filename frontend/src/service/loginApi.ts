@@ -4,7 +4,8 @@ const API_URL = "/auth/login";
 
 export interface LoginResponse {
   status: number;
-  token: string;
+  message: string;
+  accessToken: string;
 }
 
 export async function login(
