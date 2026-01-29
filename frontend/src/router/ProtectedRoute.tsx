@@ -1,11 +1,15 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../store/auth";
+import { getAccessToken } from "../service/tokenStore";
 
 type ProtectedRouteProps = { children: React.ReactElement };
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { accessToken } = useAuth();
   const token =
-    typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+    accessToken ??
+    (typeof window !== "undefined" ? getAccessToken() : null);
   const location = useLocation();
 
   if (!token) {

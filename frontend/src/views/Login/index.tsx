@@ -13,10 +13,9 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../store/auth";
 import httpClient from "../../service/httpClients";
 
-const { setAccessToken } = useAuth();
-
 export default function Login() {
   const navigate = useNavigate();
+  const { setAccessToken } = useAuth();
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -31,7 +30,7 @@ export default function Login() {
       const res = await login(email, password);
       if (res && res.status === 200) {
         setAccessToken(res.accessToken);
-        navigate("/users");
+        navigate("/home");
       }
     } catch (e: any) {
       const status = e.response?.status;

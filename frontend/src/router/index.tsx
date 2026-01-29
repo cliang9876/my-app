@@ -10,7 +10,7 @@ const ErrorPage = lazy(() => import("../views/ErrorPage"));
 const routes: RouteObject[] = [
   {
     path: "/",
-    element: <Navigate to="/home" />
+    element: <Navigate to="/login" />
   },
   {
     path: "/home",

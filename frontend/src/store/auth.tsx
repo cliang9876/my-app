@@ -10,8 +10,8 @@ const AuthContext = createContext<AuthCtx | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   useEffect(() => {
-    (setTokenRef(accessToken), [accessToken]);
-  });
+    setTokenRef(accessToken);
+  }, [accessToken]);
   return (
     <AuthContext.Provider value={{ accessToken, setAccessToken }}>
       {children}

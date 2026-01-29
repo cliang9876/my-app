@@ -1,10 +1,10 @@
-import React, { Suspense } from "react";
-import { useRoutes, NavLink } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./store/auth";
 import httpClient from "./service/httpClients";
-import routes from "./router";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Layout from "./layout/Layout";
+import Header from "./layout/Header";
+import Footer from "./layout/Footer";
 
 function BootStrap({ children }: { children: React.ReactNode }) {
   const { setAccessToken } = useAuth();
@@ -21,24 +21,36 @@ function BootStrap({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function AppShell() {
+  const { accessToken, setAccessToken } = useAuth();
+  const navigate = useNavigate();
+  const isAuthed = Boolean(accessToken);
+
+  const handleLogout = React.useCallback(async () => {
+    try {
+      await httpClient.post("/auth/logout");
+    } catch (e) {
+      // ignore logout errors; we'll still clear local state
+    } finally {
+      setAccessToken(null);
+      navigate("/login", { replace: true });
+    }
+  }, [setAccessToken, navigate]);
+
+  return (
+    <div className="App app-root">
+      <Header isAuthed={isAuthed} onLogout={handleLogout} />
+      <Layout />
+      <Footer />
+    </div>
+  );
+}
+
 function App() {
   return (
     <AuthProvider>
       <BootStrap>
-        <div className="App app-root">
-          <Header />
-          <nav className="app-nav">
-            <NavLink to="/login">Login</NavLink>
-            <NavLink to="/home">Home</NavLink>
-            <NavLink to="/users">Users</NavLink>
-          </nav>
-
-          <Suspense fallback="">
-            <main className="app-main">{useRoutes(routes)}</main>
-          </Suspense>
-
-          <Footer />
-        </div>
+        <AppShell />
       </BootStrap>
     </AuthProvider>
   );

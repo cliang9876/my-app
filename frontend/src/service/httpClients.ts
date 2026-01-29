@@ -22,7 +22,8 @@ httpClient.interceptors.response.use(
   async (error) => {
     const status = error.response?.status;
     const original = error.config;
-    if ((status === 401 || status === 403) && !original._retry) {
+    const isRefresh = original?.url?.includes("/auth/refresh");
+    if ((status === 401 || status === 403) && !original._retry && !isRefresh) {
       // Handle unauthorized access, e.g., redirect to login
       //if localstorage => localStorage.removeItem("authToken");
       original._retry = true;

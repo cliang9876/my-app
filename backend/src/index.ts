@@ -21,7 +21,7 @@ app.use(cookieParser() as unknown as express.RequestHandler);
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.json({ name: "my-service", status: "ok" });
 });
 
 // Mount all routes at root so endpoints like /roles/listRoles work
