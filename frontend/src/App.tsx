@@ -7,7 +7,7 @@ import Header from "./layout/Header";
 import Footer from "./layout/Footer";
 
 function BootStrap({ children }: { children: React.ReactNode }) {
-  const { setAccessToken } = useAuth();
+  const { setAccessToken, setAuthReady } = useAuth();
   React.useEffect(() => {
     httpClient
       .post("/auth/refresh")
@@ -16,7 +16,8 @@ function BootStrap({ children }: { children: React.ReactNode }) {
       })
       .catch(() => {
         setAccessToken(null);
-      });
+      })
+      .finally(() => setAuthReady(true));
   }, [setAccessToken]);
   return <>{children}</>;
 }

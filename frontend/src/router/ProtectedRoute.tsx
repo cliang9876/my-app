@@ -6,11 +6,14 @@ import { getAccessToken } from "../service/tokenStore";
 type ProtectedRouteProps = { children: React.ReactElement };
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { accessToken } = useAuth();
+  const { accessToken, authReady } = useAuth();
   const token =
-    accessToken ??
-    (typeof window !== "undefined" ? getAccessToken() : null);
+    accessToken ?? (typeof window !== "undefined" ? getAccessToken() : null);
   const location = useLocation();
+
+  if (!authReady) {
+    return null;
+  }
 
   if (!token) {
     return (

@@ -2,7 +2,8 @@ import axios from "axios";
 import { getAccessToken, setAccessToken } from "./tokenStore";
 
 const httpClient = axios.create({
-  baseURL: "http://localhost:4000",
+  // baseURL: "http://localhost:4000",
+  baseURL: "",
   withCredentials: true
 });
 

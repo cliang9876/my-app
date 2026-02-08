@@ -83,10 +83,15 @@ export const refresh = (req: Request, res: Response) => {
 
   try {
     const payload = jwt.verify(rt, secret) as jwt.JwtPayload;
-    const accessToken = jwt.sign(payload, secret, {
+    const safePayload = {
+      id: payload.id,
+      email: payload.email,
+      role: payload.role
+    };
+    const accessToken = jwt.sign(safePayload, secret, {
       expiresIn: accessExpiresIn as SignOptions["expiresIn"]
     });
-    const newRefresh = jwt.sign(payload, secret, {
+    const newRefresh = jwt.sign(safePayload, secret, {
       expiresIn: refreshExpiresIn as SignOptions["expiresIn"]
     });
 
@@ -100,6 +105,7 @@ export const refresh = (req: Request, res: Response) => {
       })
       .json({ accessToken });
   } catch (e) {
+    // console.log(e);
     return res.status(401).json({ message: "Invalid refresh token" });
   }
 };

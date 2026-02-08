@@ -4,16 +4,21 @@ import { setAccessToken as setTokenRef } from "../service/tokenStore";
 type AuthCtx = {
   accessToken: string | null;
   setAccessToken: (t: string | null) => void;
+  authReady: boolean;
+  setAuthReady: (b: boolean) => void;
 };
 const AuthContext = createContext<AuthCtx | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [authReady, setAuthReady] = useState(false);
   useEffect(() => {
     setTokenRef(accessToken);
   }, [accessToken]);
   return (
-    <AuthContext.Provider value={{ accessToken, setAccessToken }}>
+    <AuthContext.Provider
+      value={{ accessToken, setAccessToken, authReady, setAuthReady }}
+    >
       {children}
     </AuthContext.Provider>
   );
