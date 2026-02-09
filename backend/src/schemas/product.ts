@@ -7,17 +7,17 @@ export const createProductSchema = z.object({
   price: z.number().positive(),
   stock: z.number().int().nonnegative(),
   code: z.string(),
-  CategoryId: z.number().int().positive()
+  categoryId: z.number().int().positive()
 });
 
 export const updateProductSchema = z.object({
-  id: z.number().int().positive(),
+  // id: z.number().int().positive(),
   name: z.string().optional(),
   description: z.string().optional(),
   price: z.number().positive().optional(),
   stock: z.number().int().nonnegative().optional(),
   code: z.string(),
-  CategoryId: z.number().int().positive()
+  categoryId: z.number().int().positive()
 });
 
 export const productResponseSchema = z.object({
