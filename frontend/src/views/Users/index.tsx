@@ -10,10 +10,11 @@ import {
   TableRow
 } from "@mui/material";
 import { User, Column } from "../../types";
-// import userList from "../../assets/data/usersMockData";
+import InputFileUpload from "../../components/Input/InputFileUpload";
 import { fetchUsers } from "../../service/userApi";
 
 export default function Users() {
+  const [fileName, setFileName] = useState("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [userList, setUsers] = React.useState<User[]>([]);
@@ -73,8 +74,16 @@ export default function Users() {
     [handleEdit, handleDelete]
   );
 
+  const handleFileChange = (files: FileList | null) => {
+    console.log(files);
+    if (files && files.length > 0) {
+      setFileName(files[0].name);
+    }
+  };
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
+      <InputFileUpload onFileChange={handleFileChange} />
+      <span>{fileName}</span>
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
