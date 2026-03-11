@@ -20,7 +20,7 @@ export async function updateProduct(
   id: number,
   data: UpdateProductDto
 ): Promise<Product> {
-  return product.update({ where: { id }, data: });
+  return product.update({ where: { id }, data });
 }
 
 export async function deleteProduct(id: number): Promise<void> {
