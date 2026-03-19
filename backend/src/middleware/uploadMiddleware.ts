@@ -2,17 +2,18 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const MAX_FILE_SIZE = 1024 * 1024 * 100; // 100MB
+const MAX_FILE_SIZE = 1024 * 1024 * 200; // 100MB
 const ALLOWED_FILES = 10;
 const ALLOWED_EXT = new Set([".xlsx", ".xls", ".csv"]);
 const ALLOWED_MIME_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "application/vnd.ms-excel",
   "text/csv",
-  "application/csv"
+  "application/csv",
+  "video/mp4"
 ]);
 
-const uploadDir = path.join(process.cwd(), "backend", "files", "uploads");
+const uploadDir = path.join(process.cwd(), "files", "uploads");
 
 fs.mkdirSync(uploadDir, { recursive: true });
 
@@ -21,9 +22,9 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname).toLowerCase();
+    // const ext = path.extname(file.originalname).toLowerCase();
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, `${uniqueSuffix}${ext}`);
+    cb(null, `${uniqueSuffix}-${file.originalname}`);
   }
 });
 

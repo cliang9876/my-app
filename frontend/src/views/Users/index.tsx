@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import {
   Table,
   Paper,
@@ -10,16 +10,14 @@ import {
   TableRow
 } from "@mui/material";
 import { User, Column } from "../../types";
-import InputFileUpload from "../../components/Input/InputFileUpload";
 import { fetchUsers } from "../../service/userApi";
 
 export default function Users() {
-  const [fileName, setFileName] = useState("");
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [userList, setUsers] = React.useState<User[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [userList, setUsers] = useState<User[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function loadUsers() {
       try {
         const data = await fetchUsers();
@@ -74,16 +72,8 @@ export default function Users() {
     [handleEdit, handleDelete]
   );
 
-  const handleFileChange = (files: FileList | null) => {
-    console.log(files);
-    if (files && files.length > 0) {
-      setFileName(files[0].name);
-    }
-  };
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <InputFileUpload onFileChange={handleFileChange} />
-      <span>{fileName}</span>
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>

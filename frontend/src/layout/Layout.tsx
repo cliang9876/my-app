@@ -13,6 +13,7 @@ const Layout: React.FC = () => {
         <nav className="app-nav">
           <NavLink to="/home">Home</NavLink>
           <NavLink to="/users">Users</NavLink>
+          <NavLink to="/files">Files</NavLink>
         </nav>
       )}
 
