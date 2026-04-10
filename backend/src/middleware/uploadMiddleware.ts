@@ -2,9 +2,9 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const MAX_FILE_SIZE = 1024 * 1024 * 200; // 100MB
+const MAX_FILE_SIZE = 1024 * 1024 * 2000;
 const ALLOWED_FILES = 10;
-const ALLOWED_EXT = new Set([".xlsx", ".xls", ".csv"]);
+const ALLOWED_EXT = new Set([".xlsx", ".xls", ".csv", ".mp4"]);
 const ALLOWED_MIME_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "application/vnd.ms-excel",
@@ -42,7 +42,13 @@ const upload = multer({
   }
 });
 
+const uploadChunk = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }
+});
+
 export const uploadFile = upload.single("file");
 export const uploadFiles = upload.array("files", ALLOWED_FILES);
+export const uploadChunkFile = uploadChunk.single("chunk");
 
 export default upload;
